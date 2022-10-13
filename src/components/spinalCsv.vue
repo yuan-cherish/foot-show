@@ -626,6 +626,7 @@ export default {
         padding: 10px 15px 0;
     }
     .layout-content{
+        width: 1125px;
         min-height: 600px;
         margin: 10px;
         overflow: hidden;
@@ -674,6 +675,7 @@ export default {
     }
     .imges_block{
         height: 400px;
+        width: 1125px;
         margin: 5px;
         overflow: hidden;
         background: #fff;

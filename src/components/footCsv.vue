@@ -552,10 +552,11 @@ export default {
     .layout-content{
         // width: 1096px;
         // width: 90.6rem;
-        width: 100%;
+        // width: 100%;
+        width: 1125px;
         height: 100%;
         min-height: 90%;
-        margin: 10px;
+        // margin: 1%;
         overflow: hidden;
         background: #fff;
         border-radius: 4px;
@@ -563,7 +564,7 @@ export default {
     .layout-content-main{
         width: 100%;
         height: 100%;
-        padding: 10px;
+        padding: 1%;
     }
     .layout-copy{
         text-align: center;
@@ -595,11 +596,14 @@ export default {
         transition: width .2s ease-in-out;
     }
     .split{
-        width: 100%;
+        display: flex;
+        // width: 100%;
+        width: 1125px;
         height: 545px;
-        border: 5px solid #dcdee2;
+        border: 1% solid #dcdee2;
     }
     .split-pane{
+        display: flex;
         padding: 10px;
     }
     .left_foot{
@@ -626,6 +630,7 @@ export default {
     }
     
     .img_left{
+        display: flex;
         z-index: 1;
         position: absolute;
         padding: 0%;
@@ -644,6 +649,7 @@ export default {
     }
 
     .img_right{
+        display: flex;
         z-index: 1;
         position: absolute;
         padding: 0%;

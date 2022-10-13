@@ -14,15 +14,10 @@ import AdminLogin from "../components/admin/loginAdmin.vue"
 import AdminHome from "../components/admin/adminHome.vue"
 import Users from "../components/admin/Users.vue"
 import Foot from "../components/admin/Foot.vue"
-import Medium from "../components/ljw/medium.vue"
-import Medium2 from "../components/ljw/medium2.vue"
-import Medium3 from "../components/ljw/medium3.vue"
-import Medium4 from "../components/ljw/medium4.vue"
-import dtest from "../components/3dtest.vue"
 
 Vue.use(VueRouter)
 
-const routes = [
+const routes = [ 
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login},
   { path: '/register', component: Register},
@@ -33,8 +28,7 @@ const routes = [
     { path: '/spinalShow',  component: SpinalShow },
     { path: '/spinalCsv',  component: SpinalCsv },
     { path: '/muscleShow',  component: MuscleShow },
-    { path: '/muscleCsv',  component: MuscleCsv },
-    { path: '/dtest', component: dtest}
+    { path: '/muscleCsv',  component: MuscleCsv }
   ]
   },
   { path: '/admin', component: AdminLogin},
@@ -45,11 +39,6 @@ const routes = [
   ]
 
   },
-  { path: '/medium', component: Medium },
-  { path: '/medium2', component: Medium2 },
-  { path: '/medium3', component: Medium3 },
-  { path: '/medium4', component: Medium4 },
-  // { path: '/foot', component: Foot },
 ]
 
 const router = new VueRouter({

@@ -13,7 +13,6 @@ import 'iview-mpvue/dist/components/grid-label/style/css'
 import './plugins/element.js'
 import './assets/css/global.css'
 import './assets/fonts/iconfont.css'
-import vue3dLoader from "vue-3d-loader"
 
 Vue.config.productionTip = false
 // 配置请求的根路径
@@ -46,7 +45,7 @@ Vue.prototype.$axios = axios;
 // Vue.component('tree-table', TreeTable)
 Vue.prototype.$echarts = echarts
 
-Vue.use(vue3dLoader)
+// Vue.use(vue3dLoader)
 
 Vue.use(iView);
 Vue.use(HighchartsVue);
