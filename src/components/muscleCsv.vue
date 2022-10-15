@@ -5,7 +5,7 @@
                 name="file"
                 ref=upload
                 type="drag"
-                action="http://localhost:8080/get_csv_muscle"
+                action="/api/csv/get_csv_muscle"
                 :format="['csv']"
                 :default-file-list="uploadList"
                 :before-upload="handleBeforeUpload"

@@ -9,9 +9,9 @@
                 style="top:60px; background:#aeceef"
                 accordion
                 @on-select="turnUrl"
-                
+                @on-open-change="appStart"
                 >
-                    <Submenu name="/index1">
+                    <Submenu name="1">
                         <template #title>
                             <Icon type="ios-navigate" :size="iconSize"></Icon>
                             <span class="layout-text">足底压力</span>
@@ -25,7 +25,7 @@
                             <span class="layout-text">实时足底数据显示</span>
                         </Menu-item>
                     </Submenu>
-                    <Submenu name="/index2">
+                    <Submenu name="2">
                         <template #title>
                             <Icon type="ios-body" :size="iconSize"></Icon>
                             <span class="layout-text">脊柱压力</span>
@@ -39,7 +39,7 @@
                             <span class="layout-text">实时脊柱压力显示</span>
                         </Menu-item>
                     </Submenu>
-                    <Submenu name="/index3">
+                    <Submenu name="3">
                         <template #title>
                             <Icon type="ios-pulse" :size="iconSize"></Icon>
                             <span class="layout-text">肌肉收缩显示</span>
@@ -94,7 +94,8 @@ export default {
         spanRight: 19,
         model: "0",
         activeName: "/footCsv",
-        tittle: "批量显示足底压力"
+        tittle: "批量显示足底压力",
+        appCode: "",
     }   
     },
     computed: {
@@ -136,6 +137,18 @@ export default {
             }
             window.sessionStorage.setItem('activePath', this.activeName)
             this.$router.path = e
+        },
+        appStart(e){
+            this.appCode = e[0]
+            // return this.$message.success("启动 " + this.appCode + "号app")
+            this.$axios.get('/api/csv/appStart/' + this.appCode, {
+                headers: {
+                        // 'token': window.sessionStorage.getItem('token')
+                }
+            })
+            .then((res) => {
+                return this.$message.success(res['data'])
+            })
         },
         mounted(){
         }

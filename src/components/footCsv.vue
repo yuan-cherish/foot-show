@@ -5,7 +5,7 @@
                 name="file"
                 ref=upload
                 type="drag"
-                action="http://localhost:8088/get_csv_data"
+                action="/api/csv/get_csv_data"
                 :format="['csv']"
                 :default-file-list="uploadList"
                 :before-upload="handleBeforeUpload"

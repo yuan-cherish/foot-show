@@ -5,7 +5,7 @@
                 name="file"
                 ref=upload
                 type="drag"
-                action="http://localhost:8088/get_csv_spnal"
+                action="/api/csv/get_csv_spnal"
                 :format="['csv']"
                 :default-file-list="uploadList"
                 :before-upload="handleBeforeUpload"
