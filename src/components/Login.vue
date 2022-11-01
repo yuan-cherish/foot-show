@@ -35,19 +35,19 @@
             ></el-input>
         </el-form-item>
 
-        <el-form-item>
+        <!-- <el-form-item>
             <el-input
             prefix-icon="iconfont icon-danju"
             style="font-size: 15px;"
             placeholder="请输入鞋垫编号"
             ></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
         <!-- 按钮区域 -->
         <el-form-item class="btns">
             <el-button type="primary" @click="login('loginFormRef')" style="font-size: 20px;">登录</el-button>
             <!-- <el-button type="info" @click="resetLoginForm" style="font-size: 20px;">重置</el-button> -->
-            <el-button type="info" @click="register" style="font-size: 20px;">注册</el-button>
+            <!-- <el-button type="info" @click="register" style="font-size: 20px;">注册</el-button> -->
         </el-form-item>
         </el-form>
     </div>
@@ -93,34 +93,41 @@ export default {
             this.$router.push('/register')
         },
         login(name) {
-        const father = this
-        this.$refs[name].validate((valid) => {
-        if (valid) {
-            const paramsList = new URLSearchParams()
-            paramsList.append('username', this.loginForm.username)
-            paramsList.append('password', this.loginForm.password)
-            this.$axios
-                .post('/api/java/user/login', paramsList,{
-                    headers: { 
-                        'content-type': 'application/x-www-form-urlencoded', 
-                        }}
-                )
-                .then((res) => {
-                if (res.data.code == '1') {
-                    this.$Message.success('登录成功')
-                    // console.log(res)
-                    window.sessionStorage.setItem('user', JSON.stringify(res.data.data.user))
-                    window.sessionStorage.setItem('token', res.data.data.token)
-                    // console.log(JSON.parse(window.sessionStorage.getItem('user'))['userId'])
-                    father.$router.push('/Home')
-                }else{
-                    this.$Message.error('用户名或密码输入错误')
-                    console.log(res)
-                }
-            })
-        } 
-        })
-    },
+            // const father = this
+            // this.$refs[name].validate((valid) => {
+            // if (valid) {
+            //     const paramsList = new URLSearchParams()
+            //     paramsList.append('username', this.loginForm.username)
+            //     paramsList.append('password', this.loginForm.password)
+            //     this.$axios
+            //         .post('/api/java/user/login', paramsList,{
+            //             headers: { 
+            //                 'content-type': 'application/x-www-form-urlencoded', 
+            //                 }}
+            //         )
+            //         .then((res) => {
+            //         if (res.data.code == '1') {
+            //             this.$Message.success('登录成功')
+            //             // console.log(res)
+            //             window.sessionStorage.setItem('user', JSON.stringify(res.data.data.user))
+            //             window.sessionStorage.setItem('token', res.data.data.token)
+            //             // console.log(JSON.parse(window.sessionStorage.getItem('user'))['userId'])
+            //             father.$router.push('/Home')
+            //         }else{
+            //             this.$Message.error('用户名或密码输入错误')
+            //             console.log(res)
+            //         }
+            //     })
+            // } 
+            // })
+            if(this.loginForm.username == "admin" || this.loginForm.password == "admin"){
+                window.sessionStorage.setItem('token', "token")
+                this.$Message.success('登录成功')
+                this.$router.push('/Home')
+            }else{
+                this.$Message.error('用户名或密码输入错误')
+            }
+        },
         
     }
     }
@@ -136,7 +143,7 @@ export default {
 
     .login_box {
         width: 550px;
-        height: 400px;
+        height: 350px;
         background-color: #fff;
         border-radius: 3px;
         position: absolute;
@@ -166,10 +173,12 @@ export default {
 
     .login_form {
         position: absolute;
+        left: 10%;
         bottom: 0;
-        width: 100%;
-        padding: 0 20px;
+        width: 80%;
+        // padding: 0 20px;
         box-sizing: border-box;
+        // height: 100%;
     }
 
     .btns {

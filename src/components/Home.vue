@@ -34,7 +34,7 @@
                             <Icon type="ios-body" :size="iconSize"></Icon>
                             <span class="layout-text">批量脊柱压力显示</span>
                         </Menu-item>
-                        <Menu-item name="/spinalCsv" to="/spinalShow">
+                        <Menu-item name="/spinalTime" to="/spinalShow">
                             <Icon type="ios-body" :size="iconSize"></Icon>
                             <span class="layout-text">实时脊柱压力显示</span>
                         </Menu-item>
@@ -130,10 +130,14 @@ export default {
                 this.tittle = "批量显示足底压力"
             }else if (e == '/footTime'){
                 this.tittle = "实时动态显示足底压力"
-            }else if (e == '/spinalShow'){
-                this.tittle = "脊柱传感器数据显示"
-            }else{
-                this.tittle = "肌肉收缩状态光电传感器数据显示"
+            }else if (e == '/spinalCsv'){
+                this.tittle = "批量脊柱压力显示"
+            }else if (e == '/spinalTime'){
+                this.tittle = "实时脊柱压力显示"
+            }else if (e == '/muscleCsv'){
+                this.tittle = "批量肌肉收缩显示"
+            }else if (e == '/muscleShow'){
+                this.tittle = "实时肌肉收缩显示"
             }
             window.sessionStorage.setItem('activePath', this.activeName)
             this.$router.path = e
@@ -147,7 +151,8 @@ export default {
                 }
             })
             .then((res) => {
-                return this.$message.success(res['data'])
+                // return this.$message.success(res['data'])
+                // console.log(res['data'])
             })
         },
         mounted(){
