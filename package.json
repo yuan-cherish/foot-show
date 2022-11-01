@@ -10,6 +10,7 @@
   "dependencies": {
     "babel-plugin-component": "^1.1.1",
     "core-js": "^3.8.3",
+    "highcharts": "^10.3.1",
     "highcharts-vue": "^1.4.0",
     "iview": "^3.5.4",
     "iview-mpvue": "^1.0.6",
