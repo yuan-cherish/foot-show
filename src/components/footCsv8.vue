@@ -1,46 +1,79 @@
 <template>
     <div class="layout-content">
         <div class="layout-content-main">
+            <Upload
+                name="file"
+                ref=upload
+                type="drag"
+                action="/api/csv/get_csv_eight"
+                :format="['csv']"
+                :default-file-list="uploadList"
+                :before-upload="handleBeforeUpload"
+                :on-remove="removeFile"
+                :on-format-error="handleFormatError"
+                :on-success="handleSuccess"
+                v-if="model=='0'"
+                >
+                <div style="padding: 5px 0">
+                    <Icon type="ios-cloud-upload" size="50" style="color: #3399ff"></Icon>
+                    <p style="font-size:18px;">点击或将文件拖拽到这里上传,只支持csv文件（单文件上传）</p>
+                </div>
+            </Upload>
             <Button type="primary" 
                     size="large" 
                     icon="ios-cloud-upload-outline" 
-                    @click="play"
+                    v-if="haveUpload"
+                    @click="upload"
                     :loading="loadingStatus"
                     id="upload_button"
                     >
-                    <span v-if="!playingStatus" style="font-size:18px;">开始接收数据</span>
-                    <span v-if="playingStatus" style="font-size:18px;">暂停接受</span>
+                    <span v-if="!loadingStatus" style="font-size:18px;">上传文件</span>
+                    <span v-if="loadingStatus" style="font-size:18px;">处理数据</span>
             </Button>
-            <!-- <Select class="selectLeftPort" size="large" placeholder="请选择左脚蓝牙端口">
-                <Option v-for="item in portList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-            <Select class="selectRightPort" size="large" placeholder="请选择右脚蓝牙端口">
-                <Option v-for="item in portList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select> -->
+            <Button type="success" 
+                    shape="circle" 
+                    icon="ios-cloud-play-outline" 
+                    v-if="can_play"
+                    @click="play"
+                    :loading="playingStatus"
+                    style="font-size:18px;">
+                    播放数据
+            </Button>
+            <Button type="primary" 
+                    shape="circle" 
+                    icon="ios-cloud-play-outline" 
+                    @click="dotimeOut"
+                    v-if="playingStatus"
+                    style="margin-left: 2%;"
+                    >
+                    <span v-if="!timeOut" style="font-size:18px;">暂停播放</span>
+                    <span v-if="timeOut" style="font-size:18px;">继续播放</span>
+            </Button>
+            <Progress v-if="playingStatus" :percent="playingTime" status="active"></Progress>
         </div>
         <div class="layout-content-main">
-            <Table class="table" height="300" size="large" stripe border :columns="table_columns" :data="table_data" ></Table>
+            <Table class="table" height="300" size="large" stripe border :columns="table_columns" :data="table_data"> </Table>
             <div class="split">
                 <Split>
                     <div slot="left" class="left_foot">
                         <div style="height:40px;width:100%;text-align:left;padding:10px;font-size:25px;">Left Foot</div>
                         <div class="left_foot_points">
                             <img class="img_left" src="../resource/left.jpg" alt="左脚">
-                            <List style="opacity: 1;">
+                            <List style="opacity: 1;  width: 100%;">
                             <ListItem class="pointsCi" v-bind:key=index v-for="(item,index) in left_points">
                                 <li class="pointsLi"  :style="{'background-color': getColor(point)}" v-bind:key=index v-for="(point, index) in item"></li>
                             </ListItem>
                             </List>
                         </div>
-                        
-                        <highcharts class="left_charts" :options="left_chartOptions" ></highcharts>
+                            <highcharts class="left_charts" :options="left_chartOptions" ></highcharts>
+                    
                         
                     </div>
                     <div slot="right" class="right_foot">
                         <div style="height:40px;width:100%;text-align:left;padding:10px;font-size:25px;">Right Foot</div>
                         <div class="right_foot_points">
                             <img class="img_right" src="../resource/right.jpg" alt="右脚">
-                            <List style="opacity: 1;">
+                            <List style="opacity: 1; width: 100%;">
                             <ListItem class="pointsCi" v-bind:key=index v-for="(item,index) in right_points">
                                 <li class="pointsLi" :style="{'background-color': getColor(point)}" v-bind:key=index v-for="(point, index) in item"></li>
                             </ListItem>
@@ -53,13 +86,7 @@
         </div>
     </div>
 </template>
-
 <script>
-import Highcharts from "highcharts/highstock";
-import loadExporting from "highcharts/modules/exporting";
-import exportExcel from "highcharts/modules/export-data.src";
-loadExporting(Highcharts);
-exportExcel(Highcharts);
 export default {
     name: 'foot_vue',
     data() {
@@ -73,68 +100,15 @@ export default {
         loadingStatus: false,
         playingStatus: false,
         time: 0,
-        left_points: [],
         left_points: [
-            //         [0, 0, 13, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 14, 0, 0, 11, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 13, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 12, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 11, 0, 12, 0, 0],
-            // [0, 0, 0, 0, 0, 0],
-            // [0, 0, 17, 0, 0, 0]
-                    ],
-        right_points: [],
-        right_points:[
-                // [0, 0, 13, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 14, 0, 0, 11, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 13, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 12, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 11, 0, 12, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 17, 0, 0, 0]
-                    ],
-        // playingTime: 0,
+            // [0, 2895.0], [2773.0, 2776.0], [2801.0, 0], [2753.0, 0], [2997.0, 3058.0], [2986.0, 0]
+        ],
+        right_points: [
+            // [2895.0, 0], [2773.0, 2776.0], [0, 2801.0], [0, 2753.0], [2997.0, 3058.0], [0, 2986.0]
+        ],
+        playingTime: 0,
         timeOut: false,
-        nowTime: 0,
-//         left_sum: [[[1130, 2889, 6, 2874, 2907, 0, 0], [1825, 2894, 2904, 9, 2868, 2735, 11], [726, 2677, 2900, 8,
-// 2870, 2904, 168], [4, 625, 1713, 0, 2101, 1742, 0], [5, 8, 11, 3, 9, 119, 0], [4, 5, 10, 4, 9, 6, 3], [3, 5, 10, 4, 2,
-// 0, 1], [4, 5, 7, 2, 1, 0, 2], [3, 3, 8, 3, 2, 0, 1], [483, 11, 9, 2, 5, 0, 2], [0, 2, 9, 4, 8, 6, 2], [4, 6, 11, 3, 8,
-// 6, 4], [4, 5, 10, 3, 9, 6, 2], [3, 6, 11, 2, 8, 6, 0], [5, 8, 4, 9, 0, 0, 0]], [[1116, 2889, 7, 2872, 2906, 0, 0],
-// [1831, 2894, 2902, 9, 2869, 2732, 11], [744, 2695, 2901, 8, 2870, 2902, 179], [1, 651, 1773, 0, 2146, 1783, 0], [4, 8,
-// 12, 3, 10, 128, 0], [5, 5, 9, 3, 8, 7, 3], [3, 5, 10, 4, 2, 0, 1], [4, 5, 7, 2, 1, 0, 2], [3, 3, 8, 3, 2, 0, 1], [483,
-// 11, 9, 2, 5, 0, 2], [0, 2, 9, 4, 8, 6, 2], [4, 6, 11, 3, 8, 6, 4], [4, 5, 10, 3, 9, 6, 2], [3, 6, 11, 2, 8, 6, 0], [6,
-// 9, 2, 8, 0, 0, 0]], [[1135, 2890, 8, 2874, 2906, 0, 0], [1847, 2894, 2902, 8, 2869, 2730, 11], [731, 2704, 2902, 9,
-// 2869, 2902, 202], [0, 686, 1820, 0, 2207, 1833, 0], [4, 8, 12, 4, 10, 130, 0], [5, 6, 9, 3, 8, 7, 4], [4, 5, 10, 3, 9,
-// 6, 2], [3, 6, 10, 3, 8, 5, 3], [4, 5, 8, 4, 6, 0, 1], [485, 11, 11, 3, 4, 0, 2], [0, 4, 7, 1, 2, 0, 1], [3, 3, 8, 3, 1,
-// 0, 3], [2, 4, 9, 2, 9, 8, 2], [4, 5, 10, 4, 8, 6, 0], [5, 9, 3, 8, 0, 0, 0]]],
-//         right_sum: [[[481, 2151, 2762, 1934, 2768, 0, 0], [11, 2735,
-// 2768, 2768, 2768, 2769, 598], [0, 2078, 2270, 2764, 2768, 2771, 266], [0, 5, 325, 1652, 1931, 518, 0], [4, 4, 7, 10, 9,
-// 8, 3], [3, 5, 8, 11, 9, 7, 3], [4, 7, 6, 10, 6, 5, 4], [4, 5, 7, 9, 9, 6, 4], [3, 6, 8, 8, 6, 4, 4], [196, 64, 7, 9, 9,
-// 8, 3], [0, 2, 8, 11, 8, 8, 4], [5, 5, 7, 10, 9, 8, 4], [4, 5, 8, 11, 8, 7, 4], [4, 5, 7, 10, 8, 8, 0], [5, 7, 11, 10, 0,
-// 0, 0]], [[481, 2151, 2762, 1934, 2768, 0, 0], [11, 2735, 2768, 2768, 2768, 2769, 598], [0, 2078, 2270, 2764, 2768, 2771,
-// 266], [0, 5, 325, 1652, 1931, 518, 0], [4, 4, 8, 11, 9, 8, 4], [3, 5, 7, 11, 9, 6, 4], [4, 6, 8, 10, 9, 7, 3], [4, 6, 6,
-// 10, 8, 5, 3], [3, 5, 8, 9, 6, 5, 3], [187, 64, 5, 11, 7, 6, 4], [0, 2, 8, 9, 9, 5, 3], [4, 4, 8, 11, 7, 8, 4], [4, 5, 8,
-// 11, 8, 7, 4], [4, 5, 7, 10, 8, 8, 0], [5, 7, 11, 10, 0, 0, 0]], [[474, 2042, 2761, 1914, 2767, 0, 0], [11, 2737, 2767,
-// 2768, 2769, 2768, 553], [0, 2047, 2254, 2763, 2768, 2770, 182], [0, 5, 315, 1640, 1898, 499, 0], [4, 5, 9, 10, 8, 7, 3],
-// [4, 6, 7, 10, 9, 8, 3], [3, 5, 7, 10, 8, 6, 4], [4, 6, 7, 10, 9, 8, 4], [3, 5, 8, 11, 8, 7, 4], [194, 64, 8, 10, 9, 6,
-// 5], [0, 0, 7, 9, 7, 5, 3], [3, 5, 9, 10, 7, 4, 3], [5, 6, 6, 9, 8, 6, 2], [2, 5, 8, 11, 8, 7, 0], [5, 7, 10, 9, 0, 0,
-// 0]]],
+        nowTime: 1,
         left_sum: [],
         right_sum: [],
         can_play: false,
@@ -152,7 +126,6 @@ export default {
         '#e70012',
         'c4143a'
         ],
-        index: 0,
         left_chartOptions: {},
         left_chart_datas: [
             // [5.5187, 193.5684],
@@ -171,7 +144,8 @@ export default {
         right_chart_datas: [
             // [-2.070148001476659, 110.35201530355405], [-2.0509542963582863, 110.16666441702885], [-2.1335098641655885, 110.28905239327297], [-2.0643200214959863, 110.32892217781212], [-2.0541235027516995, 110.31138718031725], [-2.0783974121373454, 110.31694578292954], [-2.0664051743244967, 110.28776471062335], [-2.1115720877519633, 110.40658139723145], [-2.115204309163689, 110.34316820245547], [-2.052791919137575, 110.4150386356147], [-2.09505446637807, 109.95039608841584], [-2.09585570368583, 110.40035390400354], [-2.084922708981344, 110.36018756760025], [-2.0253159429682435, 109.94167206740117], [-2.089995036421931, 110.44507867941994]
         ],
-        // left_chart_datas: [],
+        left_cop: [],
+        right_cop: [],
         table_columns: [
             {
                 title: ' ',
@@ -211,11 +185,6 @@ export default {
                 right: '0'
             },
             {
-                name: '足印轴角 度',
-                left: '0',
-                right: '0'
-            },
-            {
                 name: '压力中心连线增量 mm',
                 left: '0',
                 right: '0'
@@ -241,25 +210,8 @@ export default {
                 right: '0'
             },
         ],
-        data_left_sum: [
-            // [77.66666666666667, 2.3115384615384613, 2340, 0, 0, 77.66666666666667, 3.5496394897393237, 96.45036051026068, 55.79589572933998, 44.20410427066002],
-            // [77.66666666666667, 2.3115384615384613, 2340, 0, 0, 77.66666666666667, 3.5496394897393237, 96.45036051026068, 55.79589572933998, 44.20410427066002]
-        ],
-        data_right_sum: [
-            // [77.66666666666667, 2.3115384615384613, 2340, 0, 0, 77.66666666666667, 3.5496394897393237, 96.45036051026068, 55.79589572933998, 44.20410427066002],
-            // [77.66666666666667, 2.3115384615384613, 2340, 0, 0, 77.66666666666667, 3.5496394897393237, 96.45036051026068, 55.79589572933998, 44.20410427066002]
-        ],
-        portList: [
-            {
-                value: '/dev/cu.URT0',
-                label: '/dev/cu.URT0'
-            },
-            {
-                value: '/dev/cu.Bluetooth-Incoming-Port',
-                label: '/dev/cu.Bluetooth-Incoming-Port'
-            }
-        ],
-        
+        left_tables: [],
+        right_tables: []
     }
     },
     computed: {
@@ -268,8 +220,10 @@ export default {
         }
     },
     created() {
+        // this.mounted()
+        // this.left_points = this.left_sum[0]
+        // this.right_points = this.right_sum[0]
         this.getChart()
-        
     },
     methods: {
         getChart() {
@@ -405,22 +359,77 @@ export default {
             this.left_chartOptions = template1;
             this.right_chartOptions = template2;
         },
+        handleBeforeUpload (file) {   //上传前钩子
+            let size = file.size / 1024 / 1024
+            let type = file.name
+            if(type.includes('.csv') || type.includes('.CSV') ){
+                if(size <= 10){
+                this.file = file
+                this.uploadList = [{    //用于表单的已上传文件显示
+                    'name': file.name,
+                    'url': '',
+                    'size': file.size
+                }]
+                this.haveUpload = true
+                return false;
+                }else{
+                this.$Message.error('只支持10M以内大小的文件,请重新上传');
+                return false
+                }
+            }else{
+                this.$Message.error('只支持.csv文件类型,请重新上传');
+                return false
+            }       
+        },
+        removeFile(){   //移除已上传文件;
+            this.file = ''
+            this.uploadList = []
+        },
+        handleFormatError () {
+            this.$Notice.warning({
+                title: '文件类型',
+                desc: '文件类型错误,请选择.csv'
+            });
+        },
+        upload(){ // 上传文件
+            this.loadingStatus = true
+            this.$refs.upload.post(this.file)
+            this.haveUpload = true;
+            // this.file = '';
+            // this.uploadList = []
+            this.$Message.success("上传成功")
+        },
+        handleSuccess(res){
+            this.$Message.success("处理数据成功")
 
-        toggleClick () {
-            if (this.spanLeft === 5) {
-                this.spanLeft = 2;
-                this.spanRight = 22;
-            } else {
-                this.spanLeft = 5;
-                this.spanRight = 19;
-            }
+            this.haveUpload = false
+            this.loadingStatus = false
+            // console.log(res)
+            this.left_sum = res.left
+            this.right_sum = res.right
+            this.time = res.time
+            // this.created()
+            // sessionStorage.setItem('left_sum', JSON.stringify(this.left_sum))
+            // sessionStorage.setItem('right_sum', JSON.stringify(this.right_sum))
+            // sessionStorage.setItem('time', this.time)
+            console.log(res)
+            console.log(this.left_sum[0])
+            this.left_points = this.left_sum[0]
+            this.right_points = this.right_sum[0]
+            // this.left_cop = res.left_cop
+            // this.right_cop = res.right_cop
+            // this.left_chart_datas = this.left_cop[0]
+            // this.right_chart_datas = this.right_cop[0]
+            // this.left_tables = res.left_chart
+            // this.right_tables = res.right_chart
+            this.can_play = true
+            
         },
 
         getColor(point){
             switch(true){
                 case (point==0):
-                    // return "#dcdee2"
-                    return "#ADCEEF"
+                    return "#dcdee2"
                 case (point < 10):
                     return this.color[0]
                 case (point < 50):
@@ -449,16 +458,10 @@ export default {
             
         },
         play(){
-            // this.mounted()
+            this.mounted()
+            this.getChart()
             // this.can_play = false
-            this.playingStatus = !this.playingStatus
-            const timer = setInterval(async ()=>{
-                if(!this.playingStatus){
-                    clearInterval(timer)
-                }
-                // console.log("调用一次mounted")
-                await this.mounted()
-            }, 1000)
+            this.playingStatus = true
         },
         dotimeOut(){
             if (this.timeOut){
@@ -469,49 +472,41 @@ export default {
             }
         },
         mounted(){
-            const paramsList = new URLSearchParams()
-            paramsList.append('index', this.index)
-            var doctorId = window.sessionStorage.getItem("doctor")
-            this.$axios.get('/api/go/record/get/' + this.index + "/" + doctorId
-            ).then((res) => {
-            console.log(res)
-            if (res.status == "200"){
-                console.log(res.data)
-                // console.log("请求串口数据")
-                var temp_lenght = res.data.data.length
-                this.index = res.data.currentId
-                // this.index = res.data.indexs[temp_lenght - 1]
-
-                this.left_sum = res.data.left_sum
-                this.right_sum = res.data.right_sum
-                // this.left_chart_datas = res.data.cop_left_sum
-                // this.right_chart_datas = res.data.cop_right_sum
-                // this.data_left_sum = res.data.data_left_sum
-                // this.data_right_sum = res.data.data_right_sum
-                this.time = temp_lenght
-                // // console.log("本次串口数据长度" + this.time)
-                // const sub_timer = setInterval(()=>{
-                //     this.left_points = this.left_sum[this.nowTime]
-                //     this.right_points = this.right_sum[this.nowTime]
-                //     for(var i=0;i<this.table_data.length; i++){
-                //         this.table_data[i]['left'] = this.data_left_sum[this.nowTime][i]
-                //         this.table_data[i]['right'] = this.data_right_sum[this.nowTime][i]
-                //     }
-                //     this.nowTime = this.nowTime + 1
-                //     // console.log("子定时器")
-                //     if (this.nowTime >= this.time){
-                //         this.nowTime = 0
-                //         clearInterval(sub_timer)
-                //     }
-                // }, 1000)
-                // this.getChart()
-            }
-        })
-
+            // var index = 1
+            const timer = setInterval(()=>{
+                // this.playingStatus=true
+                if (this.timeOut) {
+                    clearInterval(timer)
+                }
+                this.left_points = this.left_sum[this.nowTime]
+                this.right_points = this.right_sum[this.nowTime]
+                // this.left_chart_datas = this.left_cop.slice(0, this.nowTime)
+                // this.right_chart_datas = this.right_cop.slice(0, this.nowTime)
+                this.getChart()
+                // for(var i=0;i<this.table_data.length; i++){
+                //     this.table_data[i]['left'] = this.left_tables[this.nowTime][i]
+                //     this.table_data[i]['right'] = this.right_tables[this.nowTime][i]
+                // }
+                this.playingTime = Math.round(100*this.nowTime / this.time)
+                this.nowTime = this.nowTime + 1
+                if (this.nowTime >= this.time){
+                    clearInterval(timer)
+                    this.timer = null
+                    this.playingStatus=false
+                    this.playingTime = 0
+                    this.$Message.success("播放结束")
+                    console.log("定时器结束")
+                    this.timeOut = false
+                    this.nowTime = 0
+                }
+                },30)
+        },
+        rowClassName() {
+            return "demo-table-error-row";
         }
     }
+    
 }
-</script>
 </script>
 <style lang="less" scoped>
 
@@ -530,6 +525,7 @@ export default {
     .layout-content{
         // width: 1096px;
         // width: 90.6rem;
+        // width: 100%;
         width: 100%;
         height: 100%;
         min-height: 90%;
@@ -612,9 +608,10 @@ export default {
         position: absolute;
         padding: 0%;
         top: 2%;
-        left: 32.2%;
+        left: 29.2%;
         width: 33%;
         height: 85%;
+
     }
 
     .img_right{
@@ -623,7 +620,7 @@ export default {
         position: absolute;
         padding: 0%;
         top: 2%;
-        left: 32.2%;
+        left: 29.2%;
         width: 33%;
         height: 85%;
         max-width:33%;
@@ -644,17 +641,17 @@ export default {
         border-bottom: 0cm solid #e8eaec;
     }
     .pointsLi{
-        width: 25.5px;
-        height: 27.5px;
+        width: 62.5px;
+        height: 62.5px;
         // width: 20%;
         margin: 0%;
         border-radius: 5%;
-        // border: 0.1px solid black;
+        border: 0.1px solid black;
     }
     
     .pointsCi{
-        width: 145px;
-        height: 25px;
+        width: 120px;
+        height: 62.5px;
         padding: 0;
         margin: 0%;
     }
@@ -662,13 +659,13 @@ export default {
     .left_charts{
         position: absolute;
         top: 7%;
-        left: 38%
+        left: 36%
     }
 
     .right_charts{
         position: absolute;
         top: 7%;
-        left: 38%
+        left: 36%
     }
     .ivu-table-large{
         padding: 0px;
@@ -676,16 +673,5 @@ export default {
         bottom: 10px;
         font-size: 20px !important;
     }
-    .selectLeftPort{
-        position: relative;
-        left: 2%;
-        // height: 100px;
-        width: 250px;
-    }
-    .selectRightPort{
-        position: relative;
-        left: 6%;
-        // height: 100px;
-        width: 250px;
-    }
+
 </style>

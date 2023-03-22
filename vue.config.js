@@ -5,23 +5,17 @@ module.exports = defineConfig({
   // heatmap: 'heatmap',
   lintOnSave:false,
   devServer: {
-    port: 8081,
+    // disableHostCheck: true,//开启反向代理
+    port: 8082,
     proxy:{
-      "/api/java":{
-        target: "http://127.0.0.1:8082",
+      "/api/go/": {
+        target: "http://127.0.0.1:8081",
         changeOrigin: true,
         pathRewrite: {
-          "^/api/java": "/",
+          '^/api/go/': '/',
         },
         ws: false,
-      },
-      "/api/python": {
-        target: "http://192.168.1.28:5000",
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/python': '/',
-        },
-        ws: false,
+        secure: false
       },
       "/api/csv": {
         // target: "http://10.89.25.154:8080",
@@ -31,6 +25,7 @@ module.exports = defineConfig({
           "^/api/csv": "/",
         },
         ws: false,
+        secure: false
       },
     }
   },

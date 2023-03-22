@@ -29,7 +29,8 @@ import {
   Select,
   Option,
   Radio,
-  DatePicker
+  DatePicker,
+  Image
 } from 'element-ui'
 
 Vue.use(Button)
@@ -61,5 +62,6 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Radio)
 Vue.use(DatePicker)
+Vue.use(Image)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

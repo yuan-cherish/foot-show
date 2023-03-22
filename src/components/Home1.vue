@@ -1,77 +1,58 @@
 <template>
-    <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+    <div :class="window=='default'?'layout1':'layout2'">
         <Row type="flex" >
-            <i-col :span="spanLeft" class="layout-menu-left">
-                <Menu 
-                :unique-opened="true"
-                :active-name="activeName" 
-                theme="light" width="auto" 
-                style="top:60px; background:#aeceef"
-                accordion
-                @on-select="turnUrl"
-                >
-                <!-- @on-open-change="appStart" -->
-                    <Submenu name="1">
-                        <template #title>
-                            <Icon type="ios-navigate" :size="iconSize"></Icon>
-                            <span class="layout-text">足底压力</span>
-                        </template>
-                        <Menu-item name="/footCsv" to="/footCsv">
-                            <Icon type="ios-navigate" :size="iconSize"></Icon>
-                            <span class="layout-text">批量足底数据显示</span>
-                        </Menu-item>
-                        <Menu-item name="/footTime" to="/footTime">
-                            <Icon type="ios-keypad" :size="iconSize"></Icon>
-                            <span class="layout-text">实时足底数据显示</span>
-                        </Menu-item>
-                    </Submenu>
-                    <Submenu name="2">
-                        <template #title>
-                            <Icon type="ios-body" :size="iconSize"></Icon>
-                            <span class="layout-text">脊柱压力</span>
-                        </template>
-                        <Menu-item name="/spinalCsv" to="/spinalCsv">
-                            <Icon type="ios-body" :size="iconSize"></Icon>
-                            <span class="layout-text">批量脊柱压力显示</span>
-                        </Menu-item>
-                        <Menu-item name="/spinalTime" to="/spinalShow">
-                            <Icon type="ios-body" :size="iconSize"></Icon>
-                            <span class="layout-text">实时脊柱压力显示</span>
-                        </Menu-item>
-                    </Submenu>
-                    <Submenu name="3">
-                        <template #title>
-                            <Icon type="ios-pulse" :size="iconSize"></Icon>
-                            <span class="layout-text">肌肉收缩显示</span>
-                        </template>
-                        <Menu-item name="/muscleCsv" to="/muscleCsv">
-                            <Icon type="ios-pulse" :size="iconSize"></Icon>
-                            <span class="layout-text">批量肌肉收缩显示</span>
-                        </Menu-item>
-                        <Menu-item name="/muscleShow" to="/muscleShow">
-                            <Icon type="ios-pulse" :size="iconSize"></Icon>
-                            <span class="layout-text">实时肌肉收缩显示</span>
-                        </Menu-item>
-                    </Submenu>
-                </Menu>
-            </i-col>
-            <i-col :span="spanRight">
+            <i-col>
                 <div class="layout-header">
-                    <!-- <i-button type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
-                    </i-button> -->
-                    <div style="padding: 0%;width:80%;">
-                        <span class="tittle">{{tittle}}</span>
-                    </div>
-                    <el-button type="info" @click="logout" class="logout" size="large">退出</el-button>
+                    <Menu 
+                    mode="horizontal" 
+                    theme="light" 
+                    :active-name="activeName"
+                    @on-select="turnUrl"
+                    width="auto" >
+                        <MenuItem name="/userMessage" to="/userMessage">
+                            <Icon type="ios-construct" />
+                            用户信息
+                        </MenuItem>
+                        <Submenu name="1">
+                            <template #title>
+                                <Icon type="ios-navigate" />
+                                足底压力
+                            </template>
+                            <MenuItem name="/footCsv" to="/footCsv">离线显示</MenuItem>
+                            <MenuItem name="/footTime" to="/footTime">实时显示</MenuItem>
+                        </Submenu>
+                        <Submenu name="2">
+                            <template #title>
+                                <Icon type="ios-body" />
+                                脊柱压力
+                            </template>
+                            <MenuItem name="/spinalCsv" to="/spinalCsv">离线显示</MenuItem>
+                            <MenuItem name="/spinalTime" to="/spinalShow">实时显示</MenuItem>
+                            </Submenu>
+                        <Submenu name="3">
+                            <template #title>
+                                <Icon type="ios-pulse" />
+                                肌肉收缩
+                            </template>
+                            <MenuItem name="/muscleCsv" to="/muscleCsv">离线显示</MenuItem>
+                            <MenuItem name="/muscleShow" to="/muscleShow">实时显示</MenuItem>
+                        </Submenu>
+                        <Submenu name="4">
+                            <template #title>
+                                <Icon type="ios-timer-outline" />
+                                足底肌肉同步
+                            </template>
+                            <MenuItem name="/fmCsv" to="/fmCsv">离线显示</MenuItem>
+                            <MenuItem name="/fmTime" to="/fmTime">实时显示</MenuItem>
+                        </Submenu>
+                        
+                        <el-button type="info" @click="logout" class="logout" size="large">退出</el-button>
+                        <el-button type="Primary" @click="changeWindow" class="window" size="large">切换窗口</el-button>
+                    </Menu>
+                    
                 </div>
-                <!-- <div class="layout-breadcrumb">
-                    <Breadcrumb-item v-if="model=='0'">批量数据展示</Breadcrumb-item>
-                    <Breadcrumb-item v-if="model=='1'">实时数据展示</Breadcrumb-item>
-                </div> -->
                 
                 <div id="app" class="layout-content">
-                    
                     <router-view></router-view>
                 </div>
                 <div class="layout-copy">
@@ -92,9 +73,10 @@ export default {
         spanLeft: 5,
         spanRight: 19,
         model: "0",
-        activeName: "/footCsv",
-        tittle: "批量显示足底压力",
+        activeName: "/userMessage",
+        tittle: "",
         appCode: "",
+        window: "default",
     }   
     },
     computed: {
@@ -141,6 +123,14 @@ export default {
             window.sessionStorage.setItem('activePath', this.activeName)
             this.$router.path = e
         },
+        changeWindow(){
+            console.log(this.window)
+            if (this.window == "default"){
+                this.window = "large"
+            } else{
+                this.window = "default"
+            }
+        },
         // appStart(e){
         //     this.appCode = e[0]
         //     // return this.$message.success("启动 " + this.appCode + "号app")
@@ -161,22 +151,32 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-    .layout{
+    .layout1{
         border: 1px solid #d7dde4;
         background: #f5f7f9;
         position: relative;
         border-radius: 4px;
         overflow: hidden;
+        zoom: 100%;
+    }
+    .layout2{
+        border: 1px solid #d7dde4;
+        background: #f5f7f9;
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        zoom: 50%;
     }
     .layout-breadcrumb{
         padding: 10px 15px 0;
     }
     .layout-content{
-        min-height: 600px;
-        margin: 10px;
+        // min-height: 600px;
+        width: 100%;
+        margin: 0px;
         overflow: hidden;
         background: #fff;
-        border-radius: 4px;
+        border-radius: 0px;
     }
     .layout-content-main{
         padding: 10px;
@@ -191,6 +191,7 @@ export default {
         
     }
     .layout-header{
+        width: 1410px;
         height: 80px;
         background: #fff;
         box-shadow: 0 1px 1px rgba(0,0,0,.1);
@@ -217,13 +218,6 @@ export default {
     .ivu-col{
         transition: width .2s ease-in-out;
     }
-    .split{
-        height: 500px;
-        border: 5px solid #dcdee2;
-    }
-    .split-pane{
-        padding: 10px;
-    }
     .tittle{
         position: absolute;
         font-size: 25px;
@@ -234,8 +228,17 @@ export default {
     }
     .logout{
         position: relative;
-        left: 90%;
+        left: 32%;
+        top: 5%;
         background-color: #2C8CF0;
+        font-size: 20px;
+        bottom: 10%;
+    }
+    .window{
+        position: relative;
+        left: 32%;
+        top: 5%;
+        background-color: #2CB6F5;
         font-size: 20px;
         bottom: 10%;
     }

@@ -86,7 +86,6 @@
         </div>
     </div>
 </template>
-
 <script>
 export default {
     name: 'foot_vue',
@@ -102,38 +101,38 @@ export default {
         playingStatus: false,
         time: 0,
         left_points: [
-            // [0, 0, 13.0, 11.0, 11.0, 0],
-            // [0, 12.0, 12.0, 10.0, 12.0, 10.0],
-            // [13.0, 13.0, 11.0, 11.0, 8.0, 6.0],
-            // [14.0, 13.0, 12.0, 11.0, 10.0, 7.0],
-            // [516.0, 0.0, 9.0, 7.0, 12.0, 8.0],
-            // [10.0, 8.0, 5.0, 0.0, 1.0, 0],
-            // [10.0, 6.0, 4.0, 0.0, 1.0, 0],
-            // [100.0, 0.0, 6.0, 0.0, 1.0, 0],
-            // [55.0, 6.0, 1142.0, 8.0, 295.0, 0],
-            // [1019.0, 56.0, 74.0, 3142.0, 1090.0, 0],
-            // [3298.0, 3298.0, 3299.0, 2823.0, 245.0, 0],
-            // [3298.0, 3298.0, 3298.0, 3297.0, 3298.0, 0],
-            // [3296.0, 3297.0, 3297.0, 3298.0, 3298.0, 0],
-            // [154.0, 3265.0, 3296.0, 3297.0, 135.0, 0],
-            // [0, 0, 17.0, 0, 0, 0]
+            // [0, 0, 13, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 14, 0, 0, 11, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 13, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 12, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 11, 0, 12, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 17, 0, 0, 0]
         ],
         right_points: [
-            // [0, 1.0, 4.0, 4.0, 0, 0],
-            // [3.0, 0.0, 2.0, 3.0, 1.0, 0],
-            // [0.0, 0.0, 4.0, 3.0, 4.0, 3.0],
-            // [297.0, 65.0, 2.0, 5.0, 1.0, 0.0],
-            // [4.0, 1.0, 3.0, 3.0, 4.0, 4.0],
-            // [0, 5.0, 4.0, 3.0, 3.0, 3.0],
-            // [0, 4.0, 3.0, 4.0, 5.0, 4.0],
-            // [0, 5.0, 0.0, 4.0, 4.0, 3.0],
-            // [0, 4.0, 0.0, 5.0, 5.0, 4.0],
-            // [0, 5.0, 0.0, 3.0, 3.0, 4.0],
-            // [0, 4.0, 5.0, 4.0, 3.0, 2.0],
-            // [0, 5.0, 3.0, 4.0, 3.0, 3.0],
-            // [0, 0.0, 0.0, 3.0, 5.0, 4.0],
-            // [0, 11.0, 36.0, 1.0, 377.0, 95.0],
-            // [0, 0, 0, 4.0, 0, 0]
+            // [0, 0, 13, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 14, 0, 0, 11, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 13, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 12, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 11, 0, 12, 0, 0],
+            // [0, 0, 0, 0, 0, 0],
+            // [0, 0, 17, 0, 0, 0]
         ],
         playingTime: 0,
         timeOut: false,
@@ -153,7 +152,7 @@ export default {
         '#f18300',
         '#e94e2f',
         '#e70012',
-        'c4143a'
+        '#c4143a',
         ],
         left_chartOptions: {},
         left_chart_datas: [
@@ -433,7 +432,7 @@ export default {
 
             this.haveUpload = false
             this.loadingStatus = false
-            console.log(res)
+            // console.log(res)
             this.left_sum = res.left
             this.right_sum = res.right
             this.time = res.time
@@ -441,6 +440,8 @@ export default {
             // sessionStorage.setItem('left_sum', JSON.stringify(this.left_sum))
             // sessionStorage.setItem('right_sum', JSON.stringify(this.right_sum))
             // sessionStorage.setItem('time', this.time)
+            console.log(res)
+            console.log(this.left_sum[0])
             this.left_points = this.left_sum[0]
             this.right_points = this.right_sum[0]
             this.left_cop = res.left_cop
@@ -456,7 +457,8 @@ export default {
         getColor(point){
             switch(true){
                 case (point==0):
-                    return "#dcdee2"
+                    // return "#dcdee2"
+                    return "#ADCEEF"
                 case (point < 10):
                     return this.color[0]
                 case (point < 50):
@@ -471,7 +473,7 @@ export default {
                     return this.color[5]
                 case (point < 1400):    
                     return this.color[6]
-                case (point < 8000):
+                case (point < 1800):
                     return this.color[7]
                 case (point < 2200):
                     return this.color[8]
@@ -553,10 +555,10 @@ export default {
         // width: 1096px;
         // width: 90.6rem;
         // width: 100%;
-        width: 1125px;
+        width: 100%;
         height: 100%;
         min-height: 90%;
-        // margin: 1%;
+        margin: 10px;
         overflow: hidden;
         background: #fff;
         border-radius: 4px;
@@ -564,7 +566,7 @@ export default {
     .layout-content-main{
         width: 100%;
         height: 100%;
-        padding: 1%;
+        padding: 10px;
     }
     .layout-copy{
         text-align: center;
@@ -598,9 +600,9 @@ export default {
     .split{
         display: flex;
         // width: 100%;
-        width: 1125px;
+        width: 1276px;
         height: 545px;
-        border: 1% solid #dcdee2;
+        // border: 1% solid #dcdee2;
     }
     .split-pane{
         display: flex;
@@ -636,16 +638,8 @@ export default {
         padding: 0%;
         top: 2%;
         left: 32.2%;
-        // width: 33%;
-        // max-width: 50rem;
-        // height: 90%;
-        // opacity: 0.2;
         width: 33%;
         height: 85%;
-        // width:auto;
-        // height:auto;
-        // max-width:100%;
-        // max-height:90%;
     }
 
     .img_right{
@@ -657,12 +651,8 @@ export default {
         left: 32.2%;
         width: 33%;
         height: 85%;
-        // width:auto;
-        // height:auto;
         max-width:33%;
         max-height:90%;
-        
-        // opacity: 0.2;
     }
     .left_foot_points{
         padding: 1%;
@@ -684,7 +674,7 @@ export default {
         // width: 20%;
         margin: 0%;
         border-radius: 5%;
-        border: 0.1px solid black;
+        // border: 0.1px solid black;
     }
     
     .pointsCi{

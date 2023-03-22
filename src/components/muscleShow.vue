@@ -651,7 +651,8 @@ export default {
     }
     .split{
         height: 350px;
-        width: 100%;
+        // width: 100%;
+        width: 1290px;
         // widows: 40%;
         border: 5px solid #dcdee2;
         background: #CED0CD;
