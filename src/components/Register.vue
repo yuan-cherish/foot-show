@@ -56,6 +56,7 @@
         <el-form-item class="btns">
             <el-button type="primary" @click="register('loginFormRef')" style="font-size: 20px;">注册</el-button>
             <el-button type="info" @click="resetLoginForm" style="font-size: 20px;">重置</el-button>
+            <el-button type="success" @click="goLogin" style="font-size: 20px;">返回登陆</el-button>
         </el-form-item>
         </el-form>
     </div>
@@ -102,6 +103,9 @@ export default {
         // 点击重置按钮，重置登录表单
         resetLoginForm() {
             this.$refs.loginFormRef.resetFields()
+        },
+        goLogin(){
+            this.$router.push('/login')
         },
         register(name){
             const father = this

@@ -73,9 +73,8 @@ export default {
         loadingStatus: false,
         playingStatus: false,
         time: 0,
-        left_points: [],
         left_points: [
-            //         [0, 0, 13, 0, 0, 0],
+            // [0, 0, 13, 0, 0, 0],
             // [0, 0, 0, 0, 0, 0],
             // [0, 14, 0, 0, 11, 0],
             // [0, 0, 0, 0, 0, 0],
@@ -93,21 +92,21 @@ export default {
                     ],
         right_points: [],
         right_points:[
-                // [0, 0, 13, 0, 0, 0],
+                // [0, 0, 0, 13, 0, 0],
                 // [0, 0, 0, 0, 0, 0],
-                // [0, 14, 0, 0, 11, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 0, 0, 0, 0],
-                // [0, 13, 0, 0, 0, 0],
+                // [0, 11, 0, 0, 14, 0],
                 // [0, 0, 0, 0, 0, 0],
                 // [0, 0, 0, 0, 0, 0],
-                // [0, 12, 0, 0, 0, 0],
+                // [0, 0, 0, 0, 0, 0],
+                // [0, 0, 0, 0, 13, 0],
                 // [0, 0, 0, 0, 0, 0],
                 // [0, 0, 0, 0, 0, 0],
-                // [0, 11, 0, 12, 0, 0],
+                // [0, 0, 0, 0, 12, 0],
                 // [0, 0, 0, 0, 0, 0],
-                // [0, 0, 17, 0, 0, 0]
+                // [0, 0, 0, 0, 0, 0],
+                // [0, 0, 12, 0, 11, 0],
+                // [0, 0, 0, 0, 0, 0],
+                // [0, 0, 0, 17, 0, 0]
                     ],
         // playingTime: 0,
         timeOut: false,
@@ -449,8 +448,8 @@ export default {
             
         },
         play(){
-            // this.mounted()
-            // this.can_play = false
+            this.mounted()
+            this.can_play = false
             this.playingStatus = !this.playingStatus
             const timer = setInterval(async ()=>{
                 if(!this.playingStatus){
@@ -458,7 +457,7 @@ export default {
                 }
                 // console.log("调用一次mounted")
                 await this.mounted()
-            }, 1000)
+            }, 100000) // 多久调用一次接口
         },
         dotimeOut(){
             if (this.timeOut){
@@ -475,36 +474,35 @@ export default {
             this.$axios.get('/api/go/record/get/' + this.index + "/" + doctorId
             ).then((res) => {
             console.log(res)
-            if (res.status == "200"){
-                console.log(res.data)
+            if (res.data.code == "0"){
+                console.log(res)
                 // console.log("请求串口数据")
-                var temp_lenght = res.data.data.length
+                var temp_lenght = res.data.length
                 this.index = res.data.currentId
                 // this.index = res.data.indexs[temp_lenght - 1]
-
                 this.left_sum = res.data.left_sum
                 this.right_sum = res.data.right_sum
-                // this.left_chart_datas = res.data.cop_left_sum
-                // this.right_chart_datas = res.data.cop_right_sum
-                // this.data_left_sum = res.data.data_left_sum
-                // this.data_right_sum = res.data.data_right_sum
+                this.left_chart_datas = res.data.cop_left_sum
+                this.right_chart_datas = res.data.cop_right_sum
+                this.data_left_sum = res.data.data_left_sum
+                this.data_right_sum = res.data.data_right_sum
                 this.time = temp_lenght
-                // // console.log("本次串口数据长度" + this.time)
-                // const sub_timer = setInterval(()=>{
-                //     this.left_points = this.left_sum[this.nowTime]
-                //     this.right_points = this.right_sum[this.nowTime]
-                //     for(var i=0;i<this.table_data.length; i++){
-                //         this.table_data[i]['left'] = this.data_left_sum[this.nowTime][i]
-                //         this.table_data[i]['right'] = this.data_right_sum[this.nowTime][i]
-                //     }
-                //     this.nowTime = this.nowTime + 1
-                //     // console.log("子定时器")
-                //     if (this.nowTime >= this.time){
-                //         this.nowTime = 0
-                //         clearInterval(sub_timer)
-                //     }
-                // }, 1000)
-                // this.getChart()
+                console.log("本次串口数据长度" + this.time)
+                const sub_timer = setInterval(()=>{
+                    this.left_points = this.left_sum[this.nowTime]
+                    this.right_points = this.right_sum[this.nowTime]
+                    for(var i=0;i<this.table_data.length; i++){
+                        this.table_data[i]['left'] = this.data_left_sum[this.nowTime][i]
+                        this.table_data[i]['right'] = this.data_right_sum[this.nowTime][i]
+                    }
+                    this.nowTime = this.nowTime + 1
+                    // console.log("子定时器")
+                    if (this.nowTime >= this.time){
+                        this.nowTime = 0
+                        clearInterval(sub_timer)
+                    }
+                }, 300)
+                this.getChart()
             }
         })
 
