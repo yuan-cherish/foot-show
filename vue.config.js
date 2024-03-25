@@ -1,15 +1,17 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  publicPath: '',
+  publicPath: './',
+  lintOnSave: false,
   transpileDependencies: true,
   // heatmap: 'heatmap',
   lintOnSave:false,
   devServer: {
     // disableHostCheck: true,//开启反向代理
-    port: 8082,
+    port: 8083,
     proxy:{
       "/api/go/": {
-        target: "http://127.0.0.1:8081",
+        target: "http://47.102.222.164:8081",
+        // target: "http://127.0.0.1:8081",
         changeOrigin: true,
         pathRewrite: {
           '^/api/go/': '/',
@@ -18,8 +20,8 @@ module.exports = defineConfig({
         secure: false
       },
       "/api/csv": {
-        // target: "http://10.89.25.154:8080",
-        target: "http://127.0.0.1:8080",
+        target: "http://47.102.222.164:8082",
+        // target: "http://127.0.0.1:8082",
         changeOrigin: true,
         pathRewrite: {
           "^/api/csv": "/",
