@@ -19,8 +19,8 @@ module.exports = defineConfig({
         ws: false,
         secure: false
       },
-      "/api/csv": {
-        target: "http://47.102.222.164:8082",
+      "/api/csv/": {
+        target: "http://47.102.222.164:8080",
         // target: "http://127.0.0.1:8082",
         changeOrigin: true,
         pathRewrite: {

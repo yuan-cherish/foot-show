@@ -42,8 +42,8 @@
                                 <Icon type="ios-timer-outline" />
                                 足底肌肉同步
                             </template>
-                            <MenuItem name="/fmCsv" to="/fmCsv">离线显示</MenuItem>
-                            <MenuItem name="/fmTime" to="/fmTime">实时显示</MenuItem>
+                            <MenuItem name="/fmCsv" to="/fmCsv">实时显示</MenuItem>
+                            <!-- <MenuItem name="/fmTime" to="/fmTime">实时显示</MenuItem> -->
                         </Submenu>
                         
                         <el-button type="info" @click="logout" class="logout" size="large">退出</el-button>

@@ -1,55 +1,17 @@
 <template>
     <div class="layout-content">
         <div class="layout-content-main">
-            <Upload
-                name="file"
-                ref=upload
-                type="drag"
-                action="/api/csv/get_csv_eight"
-                :format="['csv']"
-                :default-file-list="uploadList"
-                :before-upload="handleBeforeUpload"
-                :on-remove="removeFile"
-                :on-format-error="handleFormatError"
-                :on-success="handleSuccess"
-                v-if="model=='0'"
-                >
-                <div style="padding: 5px 0">
-                    <Icon type="ios-cloud-upload" size="50" style="color: #3399ff"></Icon>
-                    <p style="font-size:18px;">点击或将文件拖拽到这里上传,只支持csv文件（单文件上传）</p>
-                </div>
-            </Upload>
             <Button type="primary" 
                     size="large" 
                     icon="ios-cloud-upload-outline" 
-                    v-if="haveUpload"
-                    @click="upload"
+                    @click="play"
                     :loading="loadingStatus"
                     id="upload_button"
                     >
-                    <span v-if="!loadingStatus" style="font-size:18px;">上传文件</span>
-                    <span v-if="loadingStatus" style="font-size:18px;">处理数据</span>
+                    <span v-if="!playingStatus" style="font-size:18px;">开始接收数据</span>
+                    <span v-if="playingStatus" style="font-size:18px;">暂停接收</span>
             </Button>
-            <Button type="success" 
-                    shape="circle" 
-                    icon="ios-cloud-play-outline" 
-                    v-if="can_play"
-                    @click="play"
-                    :loading="playingStatus"
-                    style="font-size:18px;">
-                    播放数据
-            </Button>
-            <Button type="primary" 
-                    shape="circle" 
-                    icon="ios-cloud-play-outline" 
-                    @click="dotimeOut"
-                    v-if="playingStatus"
-                    style="margin-left: 2%;"
-                    >
-                    <span v-if="!timeOut" style="font-size:18px;">暂停播放</span>
-                    <span v-if="timeOut" style="font-size:18px;">继续播放</span>
-            </Button>
-            <Progress v-if="playingStatus" :percent="playingTime" status="active"></Progress>
+            <!-- <Progress v-if="playingStatus" :percent="playingTime" status="active"></Progress> -->
         </div>
         <div class="layout-content-main">
             <div class="split">
@@ -64,7 +26,7 @@
                             </ListItem>
                             </List>
                         </div>
-                        <!-- <highcharts class="left_charts" :options="left_chartOptions" ></highcharts> -->
+                        <highcharts class="left_charts" :options="left_chartOptions" ></highcharts>
                     </div>
                     <div slot="right" class="right_foot">
                         <div style="height:40px;width:100%;text-align:left;padding:10px;font-size:25px;">Right Foot</div>
@@ -76,7 +38,7 @@
                                 </ListItem>
                             </List>
                         </div>
-                        <!-- <highcharts class="right_charts" :options="right_chartOptions" ></highcharts> -->
+                        <highcharts class="right_charts" :options="right_chartOptions" ></highcharts>
                     </div>
                 </Split>
             </div>
@@ -118,6 +80,7 @@ import LL1 from '../resource/ps/1L1.png'
 import LL2 from '../resource/ps/1L2.png'
 import RR1 from '../resource/ps/1R1.png'
 import RR2 from '../resource/ps/1R2.png'
+import axios from 'axios'
 export default {
     data() {
     return {
@@ -136,7 +99,7 @@ export default {
         ],
         playingTime: 0,
         timeOut: false,
-        nowTime: 1,
+        nowTime: 0,
         left_sum: [],
         right_sum: [],
         can_play: false,
@@ -191,6 +154,11 @@ export default {
             },
             {
                 name: '面积 cm2',
+                left: '0',
+                right: '0'
+            },
+            {
+                name: '足部轴角 ',
                 left: '0',
                 right: '0'
             },
@@ -756,7 +724,15 @@ export default {
             this.mounted()
             this.getChart()
             this.getChart_m()
-            this.playingStatus = true
+            this.can_play = false
+            this.playingStatus = !this.playingStatus
+            const timer = setInterval(async ()=>{
+                if(!this.playingStatus){
+                    clearInterval(timer)
+                }
+                // console.log("调用一次mounted")
+                await this.mounted()
+            }, 100) // 多久调用一次接口
         },
         dotimeOut(){
             if (this.timeOut){
@@ -767,60 +743,58 @@ export default {
             }
         },
         mounted(){
-            // var index = 1
-            const timer = setInterval(()=>{
-                if (this.timeOut) {
-                    clearInterval(timer)
+            axios.post('/api/csv/get_csv_eight_real_time'
+            ).then((res) => {
+                console.log(res)
+                if (res.data.code != "0"){
+                    // console.log("请求串口数据")
+                    var temp_lenght = res.data.left_sum.length
+                    // window.alert(res.data.indexs[temp_lenght - 1])
+                    this.index = res.data.currentId
+                    // window.alert(res.data.currentId)
+                    // this.index = res.data.indexs[temp_lenght - 1]
+                    this.left_sum = res.data.left_sum
+                    this.right_sum = res.data.right_sum
+                    this.left_chart_datas = res.data.cop_left_sum
+                    this.right_chart_datas = res.data.cop_right_sum
+                    this.data_left_sum = res.data.data_left_sum
+                    this.data_right_sum = res.data.data_right_sum
+                    this.left_data = res.data.left_light_sum
+                    this.right_data = res.data.right_light_sum
+                    this.time = temp_lenght
+                    console.log("本次串口数据长度" + this.time)
+                    const sub_timer = setInterval(()=>{
+                        this.left_1.push(this.left_data[this.nowTime][0])
+                        this.left_2.push(this.left_data[this.nowTime][1])
+                        this.left_3.push(this.left_data[this.nowTime][2])
+                        this.left_4.push(this.left_data[this.nowTime][3])
+                        this.right_1.push(this.right_data[this.nowTime][0])
+                        this.right_2.push(this.right_data[this.nowTime][1])
+                        this.right_3.push(this.right_data[this.nowTime][2])
+                        this.right_4.push(this.right_data[this.nowTime][3])
+                        this.changeColor()
+                        this.getChart_m()
+                        this.getChart()
+                        this.playingTime = this.playingTime+1
+                        
+                        this.left_points = this.left_sum[this.nowTime]
+                        this.right_points = this.right_sum[this.nowTime]
+                        for(var i=0;i<this.table_data.length; i++){
+                            this.table_data[i]['left'] = this.data_left_sum[this.nowTime][i]
+                            this.table_data[i]['right'] = this.data_right_sum[this.nowTime][i]
+                        }
+                        this.nowTime = this.nowTime + 1
+                        // console.log("子定时器")
+                        if (this.nowTime >= this.time){
+                            this.nowTime = 0
+                            clearInterval(sub_timer)
+                        }
+                    }, 5)
+                    this.getChart()
                 }
-                this.left_points = this.left_sum[this.nowTime]
-                this.right_points = this.right_sum[this.nowTime]
-                // 光电
-                this.left_1.push(this.left_data[this.nowTime][0])
-                this.left_2.push(this.left_data[this.nowTime][1])
-                this.left_3.push(this.left_data[this.nowTime][2])
-                this.left_4.push(this.left_data[this.nowTime][3])
-                this.right_1.push(this.right_data[this.nowTime][0])
-                this.right_2.push(this.right_data[this.nowTime][1])
-                this.right_3.push(this.right_data[this.nowTime][2])
-                this.right_4.push(this.right_data[this.nowTime][3])
-                if(this.left_1.length >= this.charts_xmax){
-                    this.charts_xmin = this.charts_xmin + 1
-                    this.charts_xmax = this.charts_xmax + 1
-                }
-                // this.left_chart_datas = this.left_cop.slice(0, this.nowTime)
-                // this.right_chart_datas = this.right_cop.slice(0, this.nowTime)
-                this.changeColor()
-                this.getChart_m()
-                this.getChart()
-                // for(var i=0;i<this.table_data.length; i++){
-                //     this.table_data[i]['left'] = this.left_tables[this.nowTime][i]
-                //     this.table_data[i]['right'] = this.right_tables[this.nowTime][i]
-                // }
-                this.playingTime = Math.round(100*this.nowTime / this.time)
-                this.nowTime = this.nowTime + 1
-                if (this.nowTime >= this.time){
-                    clearInterval(timer)
-                    this.timer = null
-                    this.playingStatus=false
-                    this.playingTime = 0
-                    this.$Message.success("播放结束")
-                    console.log("定时器结束")
-                    this.timeOut = false
-                    this.nowTime = 0
-                    // 光电
-                    this.left_1.length = 0
-                    this.left_2.length = 0
-                    this.left_3.length = 0
-                    this.left_4.length = 0
-                    this.right_1.length = 0
-                    this.right_2.length = 0
-                    this.right_3.length = 0
-                    this.right_4.length = 0
-                    this.charts_xmin = 0
-                    this.charts_xmax = 100
-                    this.getChart_m()
-                }
-                },30)
+            
+            
+            }).catch(err=>{window.alert(err)})
         },
         changeColor(){
             if (this.left_1[this.left_1.length-1] > 1.365){

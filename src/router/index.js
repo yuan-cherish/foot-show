@@ -16,6 +16,7 @@ import Users from "../components/admin/Users.vue"
 import Foot from "../components/admin/Foot.vue"
 import Home from "../components/Home1.vue"
 import fmCsv from "../components/fmCsv.vue"
+import fmShow from "../components/fmShow.vue"
 import userMessage from "../components/userMessage.vue"
 Vue.use(VueRouter)
 
@@ -33,6 +34,7 @@ const routes = [
     { path: '/muscleShow',  component: MuscleShow },
     { path: '/muscleCsv',  component: MuscleCsv },
     { path: '/fmCsv',  component: fmCsv },
+    { path: '/fmShow',  component: fmShow },
     { path: '/userMessage', component: userMessage}
   ]
   },
